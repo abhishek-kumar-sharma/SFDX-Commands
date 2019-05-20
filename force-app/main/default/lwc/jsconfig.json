@@ -1,7 +1,11 @@
 {
     "compilerOptions": {
         "baseUrl": ".",
-        "paths": {},
+        "paths": {
+            "c/login_To_Password_Manager": [
+                "login_To_Password_Manager/login_To_Password_Manager.js"
+            ]
+        },
         "experimentalDecorators": true
     },
     "include": [
