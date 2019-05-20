@@ -6,15 +6,16 @@ export default class Login_To_Password_Manager extends LightningElement {
      * Created by Abhishek
      */
     @track user = {
-        'userId': undefined,
-        'password': undefined
+        'userId': 123,
+        'password': 456
     };
 
     /**
-     * 
+     * Handle login button 
      */
     handleLogin() {
-        console.log('user data ==>', this.user);
+        console.log('user data ==>', this.user.userId);
+        console.log('user data ==>', this.user.password);
     }
 
 }
