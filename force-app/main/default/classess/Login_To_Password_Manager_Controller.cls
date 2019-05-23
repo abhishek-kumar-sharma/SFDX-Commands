@@ -13,8 +13,13 @@ public with sharing class Login_To_Password_Manager_Controller {
                 type : String
     */
     @AuraEnabled
-    public static String validateUser_Apex(){
+    public static String validateUser_Apex(String username, String password){
         try{
+            if (String.isNotBlank(username) && String.isNotBlank(password)) {
+                
+            }else{
+                throw new loginException();
+            }
             return null;
         }catch(Exception exce){
             System.debug('Exception occurred while validating the user. \n Message ::'+exce.getMessage()+'\n Cause ::'+exce.getCause()+'\n Line Number ::'+exce.getLineNumber());
