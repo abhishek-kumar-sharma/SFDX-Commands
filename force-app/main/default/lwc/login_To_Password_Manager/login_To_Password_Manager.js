@@ -9,6 +9,8 @@ export default class Login_To_Password_Manager extends LightningElement {
     username: undefined,
     password: undefined
   };
+  @track hasPageError = 'slds-hide';
+  @track errorMessage = null;
 
   /**
    * Handle login button
@@ -22,12 +24,18 @@ export default class Login_To_Password_Manager extends LightningElement {
         password: this.user.password
       })
         .then(value => {
+            this.hasPageError = 'slds-hide';
+            this.errorMessage = null;
           console.log("value -->", value);
         })
         .catch(error => {
-          console.log("Error ", error);
+            this.hasPageError = 'slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small';
+            this.errorMessage = error.body.message;
+          console.log("Error ", error.body.message);
         });
     } catch (exception) {
+        this.hasPageError = 'slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small';
+        this.errorMessage = exception.message;
       console.error(
         "Exception occuured while login. \n Message ::" + exception.message
       );
