@@ -30,6 +30,7 @@ export default class Login_To_Password_Manager extends LightningElement {
           this.errorMessage = null;
           this.isLogin = true;
           sessionStorage.setItem("loginId", value);
+          this.getDataFromApex();
         })
         .catch(error => {
           this.hasPageError =
@@ -77,7 +78,8 @@ export default class Login_To_Password_Manager extends LightningElement {
  * Created by Abhishek Kumar Sharma
  * Created Date MAY 25,2019
  */
-  getDataFromApex(){    
+  getDataFromApex(){ 
+    console.log('hello get data from apex');
     
 }
 
