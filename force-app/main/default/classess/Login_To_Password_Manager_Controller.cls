@@ -36,6 +36,35 @@ public with sharing class Login_To_Password_Manager_Controller {
             throw new AuraHandledException('Unable To Login '+exce.getMessage());
         }
     }
+
+    /**
+        * Created By : Abhishek Kumar Sharma
+        * Created Date : 29-05-2019
+        * Description : This will going to receive one parameter 
+            *************************
+            Param 1 - 
+                name : userId
+                type : String
+    */
+    @AuraEnabled
+    public static void getLoginDetails(String userId){
+        try{
+        if (String.isNotBlank(userId)) {
+            List<ECSV__Login_Detail__c> loginDetails = new List<ECSV__Login_Detail__c>();
+            String fieldToQuery = String.join(new List<String>(ECSV__Login_Detail__c.sObjectType.getDescribe().fields.getMap().keySet()), ',');
+            String query = 'SELECT '+fieldToQuery+' FROM ECSV__Login_Detail__c WHERE ECSV__Login__c='+userId+ ' WITH SECURITY_ENFORCED';
+            System.debug('query==>'+query);
+            loginDetails = Database.query(query);
+            System.debug('loginDetails'+loginDetails);
+            
+        }else {
+            throw new AuraHandledException('Session Expired. Please log in again !');
+        }
+        }catch(Exception exce){
+            System.debug('Exception occurred while getting the login details. \n Message ::'+exce.getMessage()+' \n Line Number ::'+exce.getLineNumber());
+            throw new AuraHandledException(exce.getMessage());
+        }
+    }
 }
 
 
