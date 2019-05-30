@@ -47,16 +47,18 @@ public with sharing class Login_To_Password_Manager_Controller {
                 type : String
     */
     @AuraEnabled
-    public static void getLoginDetails(String userId){
+    public static List<ECSV__Login_Detail__c> getLoginDetails(String userId){
         try{
         if (String.isNotBlank(userId)) {
             List<ECSV__Login_Detail__c> loginDetails = new List<ECSV__Login_Detail__c>();
             String fieldToQuery = String.join(new List<String>(ECSV__Login_Detail__c.sObjectType.getDescribe().fields.getMap().keySet()), ',');
-            String query = 'SELECT '+fieldToQuery+' FROM ECSV__Login_Detail__c WHERE ECSV__Login__c='+userId+ ' WITH SECURITY_ENFORCED';
-            System.debug('query==>'+query);
+            String query = 'SELECT '+fieldToQuery+' FROM ECSV__Login_Detail__c WHERE ECSV__Login__c=:userId WITH SECURITY_ENFORCED';
             loginDetails = Database.query(query);
-            System.debug('loginDetails'+loginDetails);
-            
+            if (!loginDetails.isEmpty()) {
+                return loginDetails;
+            }else{
+                throw new AuraHandledException('No record found ...');
+            }
         }else {
             throw new AuraHandledException('Session Expired. Please log in again !');
         }

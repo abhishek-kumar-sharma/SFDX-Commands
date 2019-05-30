@@ -14,6 +14,9 @@ export default class Login_To_Password_Manager extends LightningElement {
   @track isLogin = false;
   @track hasPageError = "slds-hide";
   @track errorMessage = null;
+  @track allloginRecords = null;
+  @track dataTableColumns = [];
+  @track dataTableDataLoadWait = false;
 
   /**
    * Handle login button action
@@ -26,11 +29,18 @@ export default class Login_To_Password_Manager extends LightningElement {
         password: this.user.password
       })
         .then(value => {
-          this.hasPageError = "slds-hide";
-          this.errorMessage = null;
-          this.isLogin = true;
-          sessionStorage.setItem("loginId", value);
-          this.getDataFromApex();
+          if (value !== undefined && value !== null) {
+            this.hasPageError = "slds-hide";
+            this.errorMessage = null;
+            this.isLogin = true;
+            sessionStorage.setItem("loginId", value);
+            this.dataTableDataLoadWait = true;
+            this.getDataFromApex();
+          } else {
+            this.hasPageError =
+              "slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small";
+            this.errorMessage = "No Such user found";
+          }
         })
         .catch(error => {
           this.hasPageError =
@@ -79,20 +89,27 @@ export default class Login_To_Password_Manager extends LightningElement {
    * Created Date MAY 25,2019
    */
   getDataFromApex() {
-    console.log("hello get data from apex");
     try {
       if (
         sessionStorage.getItem("loginId") !== null &&
         sessionStorage.getItem("loginId") !== undefined
       ) {
-        console.log("helo");
         loginDetailData({
           userId: sessionStorage.getItem("loginId")
         })
           .then(value => {
-            this.hasPageError = "slds-hide";
-            this.errorMessage = null;
-            console.log("hello value ==>", value);
+            if (value !== null && value !== undefined) {
+              this.hasPageError = "slds-hide";
+              this.errorMessage = null;
+              console.log("hello value ==>", value);
+              this.loadDataTable(value);
+            } else {
+              this.isLogin = false;
+              this.hasPageError =
+                "slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small";
+              this.errorMessage =
+                "Unable to get your data right now. Please logout and try again";
+            }
           })
           .catch(error => {
             this.isLogin = false;
@@ -110,6 +127,112 @@ export default class Login_To_Password_Manager extends LightningElement {
         "Exception occurred. Please contact System administrator for help.\n Message ::" +
           exception.message
       );
+    }
+  }
+
+  loadDataTable(userLoginDetails) {
+    if (userLoginDetails !== null && userLoginDetails !== undefined) {
+      userLoginDetails.forEach(element => {
+        if(element.ECSV__isValidated__c !== true){
+          element.addClass = 'redColor';
+        }
+      });
+      console.log('userLoginDetails==>',userLoginDetails);
+      this.dataTableColumns = [
+        {
+          label: "Project Name",
+          fieldName: "ECSV__Project_Name__c",
+          type: "text",
+          cellAttributes: {
+            class: {
+              fieldName: "addClass"
+            }
+          }
+        },
+        {
+          label: "Org Name",
+          fieldName: "ECSV__Organization_Name__c",
+          type: "text",
+          cellAttributes: {
+            class: {
+              fieldName: "addClass"
+            }
+          }
+        },
+        {
+          label: "User Name",
+          fieldName: "ECSV__User_Name__c",
+          type: "text",
+          cellAttributes: {
+            class: {
+              fieldName: "addClass"
+            }
+          }
+        },
+        {
+          label: "Password",
+          fieldName: "ECSV__Password__c",
+          type: "text",
+          cellAttributes: {
+            class: {
+              fieldName: "addClass"
+            }
+          }
+        },
+        {
+          label: "Security Token",
+          fieldName: "ECSV__Security_Token__c",
+          type: "text",
+          cellAttributes: {
+            class: {
+              fieldName: "addClass"
+            }
+          }
+        },
+        {
+          label: "Is Sandbox",
+          fieldName: "ECSV__isSandbox__c",
+          type: "boolean",
+          cellAttributes: {
+            class: {
+              fieldName: "addClass"
+            }
+          }
+        },
+        {
+          label: "Is Salesfore Credentials",
+          fieldName: "ECSV__is_Salesforce_Credentials__c",
+          type: "boolean",
+          cellAttributes: {
+            class: {
+              fieldName: "addClass"
+            }
+          }
+        },
+        {
+          label: "Is Valid",
+          fieldName: "ECSV__isValidated__c",
+          type: "boolean",
+          cellAttributes: {
+            class: {
+              fieldName: "addClass"
+            }
+          }
+        },
+        {
+          label: "Validated On",
+          fieldName: "ECSV__Validated_On__c",
+          type: "date",
+          cellAttributes: {
+            class: {
+              fieldName: "addClass"
+            }
+          }
+        }
+      ];
+      this.dataTableDataLoadWait = false;
+      this.allloginRecords = userLoginDetails;
+      console.log(userLoginDetails);
     }
   }
 }
