@@ -18,6 +18,17 @@ export default class Login_To_Password_Manager extends LightningElement {
   @track dataTableColumns = [];
   @track dataTableDataLoadWait = false;
 
+  /**  */
+  connectedCallback() {
+    if (sessionStorage.getItem("loginId")) {
+      this.hasPageError = "slds-hide";
+      this.errorMessage = null;
+      this.isLogin = true;
+      this.dataTableDataLoadWait = true;
+      this.getDataFromApex();
+    }
+  }
+
   /**
    * Handle login button action
    *  Method to check the user record and create session if record exist
@@ -133,11 +144,18 @@ export default class Login_To_Password_Manager extends LightningElement {
   loadDataTable(userLoginDetails) {
     if (userLoginDetails !== null && userLoginDetails !== undefined) {
       userLoginDetails.forEach(element => {
-        if(element.ECSV__isValidated__c !== true){
-          element.addClass = 'redColor';
+        if (element.ECSV__isValidated__c !== true) {
+          element.addClass = "redColor";
         }
       });
-      console.log('userLoginDetails==>',userLoginDetails);
+      console.log("userLoginDetails==>", userLoginDetails);
+      let dataTableAction = [
+        { label: "View", name: "view", iconName: "action:preview" },
+        { label: "Edit", name: "edit", iconName: "action:edit" },
+        { label: "Delete", name: "delete", iconName: "action:delete" },
+        { label: "Validate", name: "validate", iconName: "utility:sync" },
+        { label: "Login", name: "login", iconName: "utility:new_window" }
+      ];
       this.dataTableColumns = [
         {
           label: "Project Name",
@@ -228,11 +246,20 @@ export default class Login_To_Password_Manager extends LightningElement {
               fieldName: "addClass"
             }
           }
+        },
+        {
+          label: "Action",
+          type: "action",
+          typeAttributes: { rowActions: dataTableAction }
         }
       ];
       this.dataTableDataLoadWait = false;
       this.allloginRecords = userLoginDetails;
       console.log(userLoginDetails);
     }
+  }
+
+  handleRowButtonActions() {
+    
   }
 }
