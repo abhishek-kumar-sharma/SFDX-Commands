@@ -1,0 +1,1 @@
+ECSV__Login_Detail__c.sObjectType.getDescribe().isDeletable()

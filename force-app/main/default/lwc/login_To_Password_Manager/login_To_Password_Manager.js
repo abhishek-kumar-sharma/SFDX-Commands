@@ -2,6 +2,7 @@
 import { LightningElement, track } from "lwc";
 import loginData from "@salesforce/apex/Login_To_Password_Manager_Controller.validateUser_Apex";
 import loginDetailData from "@salesforce/apex/Login_To_Password_Manager_Controller.getLoginDetails";
+import deleteRecord from "@salesforce/apex/Login_To_Password_Manager_Controller.deleteSelectedRecord";
 export default class Login_To_Password_Manager extends LightningElement {
   /**
    * Variable section to hold all the condition and intermediate value
@@ -159,7 +160,7 @@ export default class Login_To_Password_Manager extends LightningElement {
           element.addClass = "redColor";
         }
       });
-      console.log("userLoginDetails==>", userLoginDetails);
+      console.log("userLoginDetails ==>", userLoginDetails);
       let dataTableAction = [
         { label: "View", name: "view", iconName: "action:preview" },
         { label: "Edit", name: "edit", iconName: "action:edit" },
@@ -312,15 +313,8 @@ export default class Login_To_Password_Manager extends LightningElement {
    * Created date : 23-May-2019
    */
   showRecordDetails(selectedRow) {
-    console.log("selectedRow showRecordDetails==>", selectedRow);
     try {
-      console.log("try");
-      const { id } = selectedRow;
-      //const index = this.findRowIndexById(id);
-      console.log("id", id);
-      //console.log("index", index);
-
-
+      console.log("selectedRow showRecordDetails id==>", selectedRow.Id);
     } catch (exception) {
       console.error(
         "Exception occureed while getting the record details from data table.\n Please refresh the page and try again.\nMessage ::" +
@@ -335,7 +329,14 @@ export default class Login_To_Password_Manager extends LightningElement {
    * Created date : 23-May-2019
    */
   openEditRecord(selectedRow) {
-    console.log("selectedRow openEditRecord==>", selectedRow);
+    try {
+      console.log("selectedRow openEditRecord==>", selectedRow.Id);
+    } catch (exception) {
+      console.error(
+        "Exception occurred unable to open record in edit view \n Message ::",
+        exception.message
+      );
+    }
   }
 
   /**
@@ -344,7 +345,35 @@ export default class Login_To_Password_Manager extends LightningElement {
    * Created date : 23-May-2019
    */
   openDeleteRecord(selectedRow) {
-    console.log("selectedRow openDeleteRecord==>", selectedRow);
+    try {
+      if(selectedRow !== null && selectedRow.Id !== null && selectedRow.Id !== undefined){          
+      console.log("selectedRow openEditRecord==>", selectedRow.Id);
+      deleteRecord({
+        recordId: selectedRow.Id
+      })
+        .then(value => {
+          console.log("Deleted ==>" + value);
+        })
+        .catch(error => {
+          console.error(
+            "Exception occured while deleting the record. \n Message ::" +
+              error.body.message
+          );
+          this.hasPageError =
+            "slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small";
+          this.errorMessage = error.body.message;
+        });
+      }else{
+        this.hasPageError =
+            "slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small";
+      this.errorMessage = 'Unable to delete record. Record not found';
+      }
+    } catch (exception) {
+      console.error(
+        "Exception occurred unable to open record in edit view \n Message ::",
+        exception.message
+      );
+    }
   }
 
   /**
