@@ -30,8 +30,10 @@ export default class Login_To_Password_Manager extends LightningElement {
   }
 
   /**
-   * Handle login button action
+   *  Handle login button action
    *  Method to check the user record and create session if record exist
+   * Created By : Abhishek Kumar Sharma
+   * Created Date : 22-MAy-2019
    */
   handleLogin() {
     try {
@@ -72,6 +74,8 @@ export default class Login_To_Password_Manager extends LightningElement {
   /**
    * Method to handle the logout button action
    * This method will invalidate the active session of user
+   * Created By : Abhishek Kumar Sharma
+   * Created Date : 22-May-2019
    */
   handleLogout() {
     this.hasPageError = "slds-hide";
@@ -83,6 +87,8 @@ export default class Login_To_Password_Manager extends LightningElement {
 
   /**
    * Handler method to set the input value , name must be same as UI
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
    */
   setInputValue(event) {
     if (
@@ -96,8 +102,8 @@ export default class Login_To_Password_Manager extends LightningElement {
 
   /**
    * Method to get all the data from apex after login
-   * Created by Abhishek Kumar Sharma
-   * Created Date MAY 25,2019
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
    */
   getDataFromApex() {
     try {
@@ -141,6 +147,11 @@ export default class Login_To_Password_Manager extends LightningElement {
     }
   }
 
+  /**
+   * Method to get all the data from apex after login
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
   loadDataTable(userLoginDetails) {
     if (userLoginDetails !== null && userLoginDetails !== undefined) {
       userLoginDetails.forEach(element => {
@@ -259,7 +270,98 @@ export default class Login_To_Password_Manager extends LightningElement {
     }
   }
 
-  handleRowButtonActions() {
-    
+  /**
+   * Method to get all the data from apex after login
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  handleVerifyAllCredentialsClick() {}
+
+  /**
+   * Method to get all the data from apex after login
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  handleRowButtonActions(event) {
+    const actionName = event.detail.action.name;
+    const row = event.detail.row;
+    switch (actionName) {
+      case "view":
+        this.showRecordDetails(row);
+        break;
+      case "edit":
+        this.openEditRecord(row);
+        break;
+      case "delete":
+        this.openDeleteRecord(row);
+        break;
+      case "validate":
+        this.validateRecord(row);
+        break;
+      case "login":
+        this.loginToOrg(row);
+        break;
+      default:
+        console.error("Unable to match any action");
+    }
+  }
+
+  /**
+   * Method to get all the data from apex after login
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  showRecordDetails(selectedRow) {
+    console.log("selectedRow showRecordDetails==>", selectedRow);
+    try {
+      console.log("try");
+      const { id } = selectedRow;
+      //const index = this.findRowIndexById(id);
+      console.log("id", id);
+      //console.log("index", index);
+
+
+    } catch (exception) {
+      console.error(
+        "Exception occureed while getting the record details from data table.\n Please refresh the page and try again.\nMessage ::" +
+          exception.message
+      );
+    }
+  }
+
+  /**
+   * Method to get all the data from apex after login
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  openEditRecord(selectedRow) {
+    console.log("selectedRow openEditRecord==>", selectedRow);
+  }
+
+  /**
+   * Method to get all the data from apex after login
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  openDeleteRecord(selectedRow) {
+    console.log("selectedRow openDeleteRecord==>", selectedRow);
+  }
+
+  /**
+   * Method to get all the data from apex after login
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  validateRecord(selectedRow) {
+    console.log("selectedRow validateRecord==>", selectedRow);
+  }
+
+  /**
+   * Method to get all the data from apex after login
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  loginToOrg(selectedRow) {
+    console.log("selectedRow loginToOrg==>", selectedRow);
   }
 }
