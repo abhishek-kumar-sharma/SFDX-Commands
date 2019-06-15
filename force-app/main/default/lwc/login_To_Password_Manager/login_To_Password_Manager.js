@@ -18,6 +18,8 @@ export default class Login_To_Password_Manager extends LightningElement {
   @track allloginRecords = null;
   @track dataTableColumns = [];
   @track dataTableDataLoadWait = false;
+  @track isviewDetails = false;
+  @track selectedRecordFromDataTable = null;
 
   /**  */
   connectedCallback() {
@@ -303,7 +305,9 @@ export default class Login_To_Password_Manager extends LightningElement {
         this.loginToOrg(row);
         break;
       default:
-        console.error("Unable to match any action");
+        console.error(
+          "Unable to match any action for data table action. Reload the page if problem still persist contact system administrator with this message"
+        );
     }
   }
 
@@ -315,6 +319,8 @@ export default class Login_To_Password_Manager extends LightningElement {
   showRecordDetails(selectedRow) {
     try {
       console.log("selectedRow showRecordDetails id==>", selectedRow.Id);
+      this.selectedRecordFromDataTable = selectedRow;
+      this.isviewDetails = true;
     } catch (exception) {
       console.error(
         "Exception occureed while getting the record details from data table.\n Please refresh the page and try again.\nMessage ::" +
@@ -346,27 +352,31 @@ export default class Login_To_Password_Manager extends LightningElement {
    */
   openDeleteRecord(selectedRow) {
     try {
-      if(selectedRow !== null && selectedRow.Id !== null && selectedRow.Id !== undefined){          
-      console.log("selectedRow openEditRecord==>", selectedRow.Id);
-      deleteRecord({
-        recordId: selectedRow.Id
-      })
-        .then(value => {
-          console.log("Deleted ==>" + value);
+      if (
+        selectedRow !== null &&
+        selectedRow.Id !== null &&
+        selectedRow.Id !== undefined
+      ) {
+        console.log("selectedRow openEditRecord==>", selectedRow.Id);
+        deleteRecord({
+          recordId: selectedRow.Id
         })
-        .catch(error => {
-          console.error(
-            "Exception occured while deleting the record. \n Message ::" +
-              error.body.message
-          );
-          this.hasPageError =
-            "slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small";
-          this.errorMessage = error.body.message;
-        });
-      }else{
+          .then(value => {
+            console.log("Deleted ==>" + value);
+          })
+          .catch(error => {
+            console.error(
+              "Exception occured while deleting the record. \n Message ::" +
+                error.body.message
+            );
+            this.hasPageError =
+              "slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small";
+            this.errorMessage = error.body.message;
+          });
+      } else {
         this.hasPageError =
-            "slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small";
-      this.errorMessage = 'Unable to delete record. Record not found';
+          "slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small";
+        this.errorMessage = "Unable to delete record. Record not found";
       }
     } catch (exception) {
       console.error(
@@ -393,4 +403,47 @@ export default class Login_To_Password_Manager extends LightningElement {
   loginToOrg(selectedRow) {
     console.log("selectedRow loginToOrg==>", selectedRow);
   }
-}
+
+  /**
+   * Method to close all the pop up
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 15-June-2019
+   */
+  handleModalClose(event) {
+    try {
+      let attributName = event.target.name;
+      console.log("attribute name ", attributName);
+      if (attributName !== null && attributName !== undefined) {
+        switch (attributName) {
+          case "isviewDetails":
+            this.isviewDetails = false;
+            break;
+          default:
+            console.error(
+              "Error while closing the pop up default case. Please contact system administrator with this error message"
+            );
+            break;
+        }
+      }
+    } catch (exception) {
+      this.hasPageError =
+        "slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small";
+      this.errorMessage = exception.message;
+      console.error(
+        "Exception occuured while login. \n Message ::" + exception.message
+      );
+    }
+  }
+
+  verifyCredentials() {
+  try{
+    console.log('selectedRecordFromDataTable',this.selectedRecordFromDataTable);
+    console.log('selectedRecordFromDataTable name',this.selectedRecordFromDataTable.name);
+    console.log('selectedRecordFromDataTable name',this.selectedRecordFromDataTable.ECSV__Project_Name__c);
+  }catch(exception){
+    console.error('Exception occurred while verifying the details. Contact System administrator with this message. \n Message ::',exception.message);
+  }
+
+
+  }
+} // class closing
