@@ -322,6 +322,7 @@ export default class Login_To_Password_Manager extends LightningElement {
       this.selectedRecordFromDataTable = selectedRow;
       this.isviewDetails = true;
       let projectNameForModelHeader = selectedRow.ECSV__Project_Name__c;
+      console.log(projectNameForModelHeader);
     } catch (exception) {
       console.error(
         "Exception occureed while getting the record details from data table.\n Please refresh the page and try again.\nMessage ::" +
