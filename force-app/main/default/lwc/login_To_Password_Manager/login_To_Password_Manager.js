@@ -439,8 +439,7 @@ export default class Login_To_Password_Manager extends LightningElement {
 
   verifyCredentials() {
   try{
-    console.log('selectedRecordFromDataTable',this.selectedRecordFromDataTable);
-    console.log('selectedRecordFromDataTable name',this.selectedRecordFromDataTable.name);
+    console.log('selectedRecordFromDataTable',JSON.stringify(this.selectedRecordFromDataTable));
     console.log('selectedRecordFromDataTable name',this.selectedRecordFromDataTable.ECSV__Project_Name__c);
   }catch(exception){
     console.error('Exception occurred while verifying the details. Contact System administrator with this message. \n Message ::',exception.message);

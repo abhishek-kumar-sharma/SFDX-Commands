@@ -1,1 +1,2 @@
-ECSV__Login_Detail__c.sObjectType.getDescribe().isDeletable()
+  Decimal d;
+     System.debug('------'+d);

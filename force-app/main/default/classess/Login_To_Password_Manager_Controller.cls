@@ -95,7 +95,6 @@ public with sharing class Login_To_Password_Manager_Controller {
              System.debug('Exception occurred while deleting the record. \n Message ::'+exce.getMessage()+' \n Line Number ::'+exce.getLineNumber()+' \n Cause ::'+exce.getCause());
              throw new AuraHandledException(exce.getMessage());
          }
-        
      }
 
 }
