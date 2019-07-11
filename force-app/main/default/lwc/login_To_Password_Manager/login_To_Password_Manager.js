@@ -29,6 +29,7 @@ export default class Login_To_Password_Manager extends LightningElement {
       this.isLogin = true;
       this.dataTableDataLoadWait = true;
       this.getDataFromApex();
+      this.googleTranslateElementInit();
     }
   }
 
@@ -448,5 +449,9 @@ export default class Login_To_Password_Manager extends LightningElement {
 
   }
 
+  googleTranslateElementInit() {
+    // eslint-disable-next-line no-new
+   // new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+  }
   
 } // class closing
