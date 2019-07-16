@@ -20,6 +20,8 @@ export default class Login_To_Password_Manager extends LightningElement {
   @track dataTableDataLoadWait = false;
   @track isviewDetails = false;
   @track selectedRecordFromDataTable = null;
+  @track isDisabled = false;
+  @track modelFooterClass = 'slds-modal__footer';
 
   /**  */
   connectedCallback() {
@@ -104,6 +106,18 @@ export default class Login_To_Password_Manager extends LightningElement {
     }
   }
 
+   /**
+   * Handler method to set the input value , name must be same as UI
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  setInputForPopUpEditMode(event) {
+    if (event.target.value !== null && event.target.value !== undefined && event.target.value.trim() !== "" && event.target.type !== 'checkbox') {
+      this.selectedRecordFromDataTable[event.target.name] = event.target.value;
+    }else if(event.target.checked !== null && event.target.checked !== undefined && event.target.type === 'checkbox'){
+      this.selectedRecordFromDataTable[event.target.name] = event.target.checked;
+    }
+  }
   /**
    * Method to get all the data from apex after login
    * Created By : Abhishek Kumar Sharma
@@ -169,6 +183,7 @@ export default class Login_To_Password_Manager extends LightningElement {
         { label: "Edit", name: "edit", iconName: "action:edit" },
         { label: "Delete", name: "delete", iconName: "action:delete" },
         { label: "Validate", name: "validate", iconName: "utility:sync" },
+        { label: "Download", name: "download", iconName: "utility:download" },
         { label: "Login", name: "login", iconName: "utility:new_window" }
       ];
       this.dataTableColumns = [
@@ -279,7 +294,27 @@ export default class Login_To_Password_Manager extends LightningElement {
    * Created By : Abhishek Kumar Sharma
    * Created date : 23-May-2019
    */
-  handleVerifyAllCredentialsClick() {}
+  handleVerifyAllCredentialsClick() {
+    console.log('handle verify all');
+  }
+
+    /**
+   * Method to get all the data from apex after login
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  handleExportAll() {
+    console.log('handle export all');
+  }
+
+     /**
+   * Method to get all the data from apex after login
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  handleAddNewCredentials() {
+    console.log('handle add new credentials all');
+  }
 
   /**
    * Method to get all the data from apex after login
@@ -291,10 +326,10 @@ export default class Login_To_Password_Manager extends LightningElement {
     const row = event.detail.row;
     switch (actionName) {
       case "view":
-        this.showRecordDetails(row);
+        this.showRecordDetails(row,'view');
         break;
       case "edit":
-        this.openEditRecord(row);
+        this.showRecordDetails(row,'edit');
         break;
       case "delete":
         this.openDeleteRecord(row);
@@ -304,6 +339,9 @@ export default class Login_To_Password_Manager extends LightningElement {
         break;
       case "login":
         this.loginToOrg(row);
+        break;
+      case "download":
+        this.downloadAsText(row);
         break;
       default:
         console.error(
@@ -317,33 +355,21 @@ export default class Login_To_Password_Manager extends LightningElement {
    * Created By : Abhishek Kumar Sharma
    * Created date : 23-May-2019
    */
-  showRecordDetails(selectedRow) {
+  showRecordDetails(selectedRow,actionName) {
     try {
-      console.log("selectedRow showRecordDetails id==>", selectedRow.Id);
       this.selectedRecordFromDataTable = selectedRow;
       this.isviewDetails = true;
-      let projectNameForModelHeader = selectedRow.ECSV__Project_Name__c;
-      console.log(projectNameForModelHeader);
+      if(actionName === 'edit'){
+        this.isDisabled = false;
+        this.modelFooterClass = 'slds-modal__footer slds-modal__footer_directional';
+      }else{
+        this.isDisabled = true;
+        this.modelFooterClass = 'slds-modal__footer';
+      }
     } catch (exception) {
       console.error(
         "Exception occureed while getting the record details from data table.\n Please refresh the page and try again.\nMessage ::" +
           exception.message
-      );
-    }
-  }
-
-  /**
-   * Method to get all the data from apex after login
-   * Created By : Abhishek Kumar Sharma
-   * Created date : 23-May-2019
-   */
-  openEditRecord(selectedRow) {
-    try {
-      console.log("selectedRow openEditRecord==>", selectedRow.Id);
-    } catch (exception) {
-      console.error(
-        "Exception occurred unable to open record in edit view \n Message ::",
-        exception.message
       );
     }
   }
@@ -407,6 +433,15 @@ export default class Login_To_Password_Manager extends LightningElement {
     console.log("selectedRow loginToOrg==>", selectedRow);
   }
 
+    /**
+   * Method to prepare and download the data in text file
+   * Created By : Abhishek Kumar Sharma
+   * Created date : 23-May-2019
+   */
+  downloadAsText(selectedRow) {
+    console.log("selectedRow downloadAsText==>", selectedRow);
+  }
+
   /**
    * Method to close all the pop up
    * Created By : Abhishek Kumar Sharma
@@ -438,20 +473,26 @@ export default class Login_To_Password_Manager extends LightningElement {
     }
   }
 
-  verifyCredentials() {
-  try{
-    console.log('selectedRecordFromDataTable',JSON.stringify(this.selectedRecordFromDataTable));
-    console.log('selectedRecordFromDataTable name',this.selectedRecordFromDataTable.ECSV__Project_Name__c);
-  }catch(exception){
-    console.error('Exception occurred while verifying the details. Contact System administrator with this message. \n Message ::',exception.message);
-  }
-
-
+  saveModifiedDetails() {
+    try {
+      console.log(
+        "selectedRecordFromDataTable",
+        JSON.stringify(this.selectedRecordFromDataTable)
+      );
+      console.log(
+        "selectedRecordFromDataTable name",
+        JSON.stringify(this.selectedRecordFromDataTable)
+      );
+    } catch (exception) {
+      console.error(
+        "Exception occurred while verifying the details. Contact System administrator with this message. \n Message ::",
+        exception.message
+      );
+    }
   }
 
   googleTranslateElementInit() {
     // eslint-disable-next-line no-new
-   // new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    // new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
   }
-  
 } // class closing
