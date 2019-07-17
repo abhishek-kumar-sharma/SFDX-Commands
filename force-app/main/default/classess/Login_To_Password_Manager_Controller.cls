@@ -97,6 +97,27 @@ public with sharing class Login_To_Password_Manager_Controller {
          }
      }
 
+    /**
+        * Created By : Abhishek Kumar Sharma
+        * Created Date : 16-07-2019
+        * Description : This will going to receive one parameter. Created to update the record of login details
+            *************************
+            Param 1 - 
+            name : updatedLoginDetails
+            type : String
+    */
+    @AuraEnabled
+    public static String updateLoginDetails(ECSV__Login_Detail__c updatedLoginDetails){
+        try{    
+            System.debug('updated login details ==>'+updatedLoginDetails);
+            update updatedLoginDetails;
+            return 'Success';
+        }catch(Exception exce){
+            System.debug('Exception occurred while deleting the record. \n Message ::'+exce.getMessage()+' \n Line Number ::'+exce.getLineNumber()+' \n Cause ::'+exce.getCause());
+             throw new AuraHandledException(exce.getMessage());
+        }
+    }
+
 }
 
 

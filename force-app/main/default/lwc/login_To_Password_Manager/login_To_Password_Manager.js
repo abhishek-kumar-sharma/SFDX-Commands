@@ -3,6 +3,7 @@ import { LightningElement, track } from "lwc";
 import loginData from "@salesforce/apex/Login_To_Password_Manager_Controller.validateUser_Apex";
 import loginDetailData from "@salesforce/apex/Login_To_Password_Manager_Controller.getLoginDetails";
 import deleteRecord from "@salesforce/apex/Login_To_Password_Manager_Controller.deleteSelectedRecord";
+import updateLoginRecord from "@salesforce/apex/Login_To_Password_Manager_Controller.updateLoginDetails";
 export default class Login_To_Password_Manager extends LightningElement {
   /**
    * Variable section to hold all the condition and intermediate value
@@ -118,6 +119,7 @@ export default class Login_To_Password_Manager extends LightningElement {
       this.selectedRecordFromDataTable[event.target.name] = event.target.checked;
     }
   }
+
   /**
    * Method to get all the data from apex after login
    * Created By : Abhishek Kumar Sharma
@@ -475,14 +477,13 @@ export default class Login_To_Password_Manager extends LightningElement {
 
   saveModifiedDetails() {
     try {
-      console.log(
-        "selectedRecordFromDataTable",
-        JSON.stringify(this.selectedRecordFromDataTable)
-      );
-      console.log(
-        "selectedRecordFromDataTable name",
-        JSON.stringify(this.selectedRecordFromDataTable)
-      );
+      console.log("selectedRecordFromDataTable",JSON.stringify(this.selectedRecordFromDataTable));
+      let param = this.selectedRecordFromDataTable;
+      updateLoginRecord({param})
+      .then(value =>{
+          console.log(JSON.stringify(value));
+      })
+
     } catch (exception) {
       console.error(
         "Exception occurred while verifying the details. Contact System administrator with this message. \n Message ::",
@@ -495,4 +496,5 @@ export default class Login_To_Password_Manager extends LightningElement {
     // eslint-disable-next-line no-new
     // new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
   }
+
 } // class closing

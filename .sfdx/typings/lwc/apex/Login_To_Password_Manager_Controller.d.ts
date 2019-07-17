@@ -7,3 +7,6 @@ declare module "@salesforce/apex/Login_To_Password_Manager_Controller.getLoginDe
 declare module "@salesforce/apex/Login_To_Password_Manager_Controller.deleteSelectedRecord" {
   export default function deleteSelectedRecord(param: {recordId: any}): Promise<any>;
 }
+declare module "@salesforce/apex/Login_To_Password_Manager_Controller.updateLoginDetails" {
+  export default function updateLoginDetails(param: {updatedLoginDetails: any}): Promise<any>;
+}
