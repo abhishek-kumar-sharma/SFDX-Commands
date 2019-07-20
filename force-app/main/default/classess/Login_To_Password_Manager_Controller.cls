@@ -107,10 +107,10 @@ public with sharing class Login_To_Password_Manager_Controller {
             type : String
     */
     @AuraEnabled
-    public static String updateLoginDetails(ECSV__Login_Detail__c updatedLoginDetails){
+    public static String updateLoginDetails(String updatedLoginDetails){
         try{    
             System.debug('updated login details ==>'+updatedLoginDetails);
-            update updatedLoginDetails;
+            //update updatedLoginDetails;
             return 'Success';
         }catch(Exception exce){
             System.debug('Exception occurred while deleting the record. \n Message ::'+exce.getMessage()+' \n Line Number ::'+exce.getLineNumber()+' \n Cause ::'+exce.getCause());
