@@ -104,14 +104,17 @@ public with sharing class Login_To_Password_Manager_Controller {
             *************************
             Param 1 - 
             name : updatedLoginDetails
-            type : String
+            type : ECSV__Login_Detail__c
     */
     @AuraEnabled
-    public static String updateLoginDetails(String updatedLoginDetails){
+    public static String updateLoginDetails(ECSV__Login_Detail__c updatedLoginDetails){
         try{    
-            System.debug('updated login details ==>'+updatedLoginDetails);
-            //update updatedLoginDetails;
-            return 'Success';
+            Database.SaveResult updateResult = Database.update(updatedLoginDetails);
+            if (updateResult.isSuccess()) {
+                return 'SUCCESS';
+            }else{
+                throw new AuraHandledException(updateResult.getErrors()[0].getMessage());
+            }
         }catch(Exception exce){
             System.debug('Exception occurred while deleting the record. \n Message ::'+exce.getMessage()+' \n Line Number ::'+exce.getLineNumber()+' \n Cause ::'+exce.getCause());
              throw new AuraHandledException(exce.getMessage());

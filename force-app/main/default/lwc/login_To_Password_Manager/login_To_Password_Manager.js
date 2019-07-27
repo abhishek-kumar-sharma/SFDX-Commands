@@ -14,6 +14,7 @@ export default class Login_To_Password_Manager extends LightningElement {
     password: undefined
   };
   @track isLogin = false;
+  @track showToast = false;
   @track hasPageError = "slds-hide";
   @track errorMessage = null;
   @track allloginRecords = null;
@@ -22,7 +23,9 @@ export default class Login_To_Password_Manager extends LightningElement {
   @track isviewDetails = false;
   @track selectedRecordFromDataTable = null;
   @track isDisabled = false;
-  @track modelFooterClass = 'slds-modal__footer';
+  @track modelFooterClass = "slds-modal__footer";
+  @track toastMessage = null;
+  @track toastThemeClass = "slds-notify slds-notify_toast slds-theme_success";
 
   /**  */
   connectedCallback() {
@@ -107,16 +110,26 @@ export default class Login_To_Password_Manager extends LightningElement {
     }
   }
 
-   /**
+  /**
    * Handler method to set the input value , name must be same as UI
    * Created By : Abhishek Kumar Sharma
    * Created date : 23-May-2019
    */
   setInputForPopUpEditMode(event) {
-    if (event.target.value !== null && event.target.value !== undefined && event.target.value.trim() !== "" && event.target.type !== 'checkbox') {
+    if (
+      event.target.value !== null &&
+      event.target.value !== undefined &&
+      event.target.value.trim() !== "" &&
+      event.target.type !== "checkbox"
+    ) {
       this.selectedRecordFromDataTable[event.target.name] = event.target.value;
-    }else if(event.target.checked !== null && event.target.checked !== undefined && event.target.type === 'checkbox'){
-      this.selectedRecordFromDataTable[event.target.name] = event.target.checked;
+    } else if (
+      event.target.checked !== null &&
+      event.target.checked !== undefined &&
+      event.target.type === "checkbox"
+    ) {
+      this.selectedRecordFromDataTable[event.target.name] =
+        event.target.checked;
     }
   }
 
@@ -297,25 +310,25 @@ export default class Login_To_Password_Manager extends LightningElement {
    * Created date : 23-May-2019
    */
   handleVerifyAllCredentialsClick() {
-    console.log('handle verify all');
+    console.log("handle verify all");
   }
 
-    /**
+  /**
    * Method to get all the data from apex after login
    * Created By : Abhishek Kumar Sharma
    * Created date : 23-May-2019
    */
   handleExportAll() {
-    console.log('handle export all');
+    console.log("handle export all");
   }
 
-     /**
+  /**
    * Method to get all the data from apex after login
    * Created By : Abhishek Kumar Sharma
    * Created date : 23-May-2019
    */
   handleAddNewCredentials() {
-    console.log('handle add new credentials all');
+    console.log("handle add new credentials all");
   }
 
   /**
@@ -328,10 +341,10 @@ export default class Login_To_Password_Manager extends LightningElement {
     const row = event.detail.row;
     switch (actionName) {
       case "view":
-        this.showRecordDetails(row,'view');
+        this.showRecordDetails(row, "view");
         break;
       case "edit":
-        this.showRecordDetails(row,'edit');
+        this.showRecordDetails(row, "edit");
         break;
       case "delete":
         this.openDeleteRecord(row);
@@ -357,16 +370,17 @@ export default class Login_To_Password_Manager extends LightningElement {
    * Created By : Abhishek Kumar Sharma
    * Created date : 23-May-2019
    */
-  showRecordDetails(selectedRow,actionName) {
+  showRecordDetails(selectedRow, actionName) {
     try {
       this.selectedRecordFromDataTable = selectedRow;
       this.isviewDetails = true;
-      if(actionName === 'edit'){
+      if (actionName === "edit") {
         this.isDisabled = false;
-        this.modelFooterClass = 'slds-modal__footer slds-modal__footer_directional';
-      }else{
+        this.modelFooterClass =
+          "slds-modal__footer slds-modal__footer_directional";
+      } else {
         this.isDisabled = true;
-        this.modelFooterClass = 'slds-modal__footer';
+        this.modelFooterClass = "slds-modal__footer";
       }
     } catch (exception) {
       console.error(
@@ -435,7 +449,7 @@ export default class Login_To_Password_Manager extends LightningElement {
     console.log("selectedRow loginToOrg==>", selectedRow);
   }
 
-    /**
+  /**
    * Method to prepare and download the data in text file
    * Created By : Abhishek Kumar Sharma
    * Created date : 23-May-2019
@@ -474,16 +488,28 @@ export default class Login_To_Password_Manager extends LightningElement {
       );
     }
   }
-
+  /**
+   * Method to send the modified details to apex class for checking the validity and update iff only valid
+   */
   saveModifiedDetails() {
     try {
-      console.log("selectedRecordFromDataTable",JSON.stringify(this.selectedRecordFromDataTable));
-      let param = this.selectedRecordFromDataTable;
-      updateLoginRecord({param})
-      .then(value =>{
-          console.log(JSON.stringify(value));
+      updateLoginRecord({
+        updatedLoginDetails: this.selectedRecordFromDataTable
       })
-
+        .then(value => {
+          if (value !== undefined && value !== null) {
+            console.log(JSON.stringify(value));
+            this.toastMessage = "Record update successfully";
+            this.showToast = true;
+            this.isviewDetails = false;
+          }
+        })
+        .catch(error => {
+          this.hasPageError =
+            "slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error sdls-m-bottom_small";
+          this.errorMessage = error.body.message;
+          console.error("Error ", error.body.message);
+        });
     } catch (exception) {
       console.error(
         "Exception occurred while verifying the details. Contact System administrator with this message. \n Message ::",
@@ -497,4 +523,8 @@ export default class Login_To_Password_Manager extends LightningElement {
     // new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
   }
 
+  hideToast() {
+    this.toastMessage = "Record update successfully";
+    this.showToast = true;
+  }
 } // class closing
