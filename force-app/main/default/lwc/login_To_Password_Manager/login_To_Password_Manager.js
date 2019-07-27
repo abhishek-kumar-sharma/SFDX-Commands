@@ -437,7 +437,13 @@ export default class Login_To_Password_Manager extends LightningElement {
    * Created date : 23-May-2019
    */
   validateRecord(selectedRow) {
-    console.log("selectedRow validateRecord==>", selectedRow);
+    try{
+      console.log("selectedRow validateRecord==>", selectedRow);
+      console.log("selectedRow validateRecord==>", selectedRow.Id);
+    }catch(exception){
+        console.error('Exception occurred while validating the record ::'+exception.message);
+    }
+    
   }
 
   /**
@@ -502,6 +508,10 @@ export default class Login_To_Password_Manager extends LightningElement {
             this.toastMessage = "Record update successfully";
             this.showToast = true;
             this.isviewDetails = false;
+            // eslint-disable-next-line @lwc/lwc/no-async-operation
+            setTimeout(() => {
+              
+            }, 3000);
           }
         })
         .catch(error => {
@@ -524,7 +534,7 @@ export default class Login_To_Password_Manager extends LightningElement {
   }
 
   hideToast() {
-    this.toastMessage = "Record update successfully";
-    this.showToast = true;
+    this.toastMessage = null;
+    this.showToast = false;
   }
 } // class closing
