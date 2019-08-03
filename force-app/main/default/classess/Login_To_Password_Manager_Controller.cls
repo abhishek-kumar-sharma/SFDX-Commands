@@ -16,6 +16,7 @@ public with sharing class Login_To_Password_Manager_Controller {
     public static String validateUser_Apex(String username, String password){
         try{
             if (String.isNotBlank(username) && String.isNotBlank(password)) {
+                System.debug('username'+username);
                 if (!Schema.sObjectType.ECSV__Login__c.fields.ECSV__User_Name__c.isAccessible() || !Schema.SObjectType.ECSV__Login__c.fields.ECSV__Password__c.isAccessible()) {
                     throw new AuraHandledException('You are not allowed to login.Please contact System Administrator');
                 }else{
@@ -64,7 +65,7 @@ public with sharing class Login_To_Password_Manager_Controller {
         }
         }catch(Exception exce){
             System.debug('Exception occurred while getting the login details. \n Message ::'+exce.getMessage()+' \n Line Number ::'+exce.getLineNumber());
-            throw new AuraHandledException(exce.getMessage());
+            throw new AuraHandledException('Darn it! Something went wrong :'+exce.getMessage());
         }
     }
 
@@ -93,7 +94,7 @@ public with sharing class Login_To_Password_Manager_Controller {
              return null;
          }catch(Exception exce){
              System.debug('Exception occurred while deleting the record. \n Message ::'+exce.getMessage()+' \n Line Number ::'+exce.getLineNumber()+' \n Cause ::'+exce.getCause());
-             throw new AuraHandledException(exce.getMessage());
+             throw new AuraHandledException('Darn it! Something went wrong :'+exce.getMessage());
          }
      }
 
@@ -113,13 +114,36 @@ public with sharing class Login_To_Password_Manager_Controller {
             if (updateResult.isSuccess()) {
                 return 'SUCCESS';
             }else{
-                throw new AuraHandledException(updateResult.getErrors()[0].getMessage());
+                throw new AuraHandledException('Darn it! Something went wrong :'+updateResult.getErrors()[0].getMessage());
             }
         }catch(Exception exce){
             System.debug('Exception occurred while deleting the record. \n Message ::'+exce.getMessage()+' \n Line Number ::'+exce.getLineNumber()+' \n Cause ::'+exce.getCause());
-             throw new AuraHandledException(exce.getMessage());
+             throw new AuraHandledException('Darn it! Something went wrong :'+exce.getMessage());
         }
     }
+
+     /**
+        * Created By : Abhishek Kumar Sharma
+        * Created Date : 27-07-2019
+        * Description : This method will going to receive record id and will hit the salesforce site for testing the record username,password and security token
+            *************************
+            Param 1 - 
+            name : recordId
+            type : Id
+    */
+    // @AuraEnabled
+    // public static string verifyRecordValidityFromSalesforce(Id recordId){
+    //     try{
+    //         if (recordId instanceof Id) {
+                
+    //         }else {
+    //             throw new AuraHandledException ('Darn it! Something went wrong : Not a valid record');
+    //         }
+    //     }catch(Exception exce){
+    //         System.debug('Exception occurred while deleting the record. \n Message ::'+exce.getMessage()+' \n Line Number ::'+exce.getLineNumber()+' \n Cause ::'+exce.getCause());
+    //          throw new AuraHandledException('Darn it! Something went wrong :'+exce.getMessage());
+    //     }
+    // }
 
 }
 
